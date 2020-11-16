@@ -1,0 +1,99 @@
+" Plugin handling
+call plug#begin('~/.config/nvim/autoload/plugged')
+
+	"Better Syntax Support
+	Plug 'sheerun/vim-polyglot'
+
+	"Language Server Protocoll
+	Plug 'neovim/nvim-lspconfig'
+
+	"Completion engine
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
+	"Python completion
+  Plug 'zchee/deoplete-jedi'
+
+	" Snippest (function signature for Python)
+  Plug 'Shougo/neosnippet'  
+  Plug 'Shougo/neosnippet-snippets'  
+
+call plug#end()
+
+let g:neosnippet#enable_completed_snippet = 1  
+
+
+" Completion engine at startup
+let g:deoplete#enable_at_startup = 1
+set completeopt-=preview
+
+
+nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+
+
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+
+"syntax highlight
+syntax enable
+
+
+set backspace=2  "make backspce working
+set noswapfile "no swap files
+set tabstop=2 "set tab
+set shiftwidth=2  "indent a line 2 spaces with >> command
+"set number "show the number of the line 
+set ignorecase "search case insensitive
+set scrolloff=5  "set when the screeen starts scrolling
+set cursorline "show the cursor actual line with coloring
+set virtualedit=all "let the cursore move behind EOL
+
+
+"colorscheme void  "setting the colorscheme
+
+
+"filetype plugin indent on "switch on filetype related stuff
+
+"disable terminal keys in command mode
+"map <Up> <NOP>
+"map <Down> <NOP>
+"map <Left> <NOP>
+"map <Right> <NOP>
+"map <BS> <NOP>
+"map <Del> <NOP>
+
+"disable terminal keys in insert mode
+"imap <Up> <NOP>
+"imap <Down> <NOP>
+"imap <Left> <NOP>
+"imap <Right> <NOP>
+"imap <BS> <NOP>
+"imap <Del> <NOP>
+
+"easier navigation in long lines
+nnoremap <Up> gk
+nnoremap <Down> gjhh  
+"nnoremap k gk
+"nnoremap j gj
+
+
+"mappings
+"################################################
+"fortran 77 style comments to !style comments
+map <F2> ddpk$J:s/C /!<CR>
+
+"put in line comments to column 73
+map <F3> 1\|/!<CR>d$72\|p
+
+"put in line comments to column 73
+map <F4> 1\|/\/<CR>d$72\|p 
+
+"Latex comment to column 73
+map <F5> 1\|/%<CR>d$72\|p
+ 
+"tab handling commands
+map <C-t> :tabnew <cr>
+map <C-Right> :tabnext <cr>
+map <C-Left> :tabprevious <cr>
+
