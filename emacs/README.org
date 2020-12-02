@@ -1,0 +1,704 @@
+#+TITLE: My Emacs config
+#+AUTHOR: Istvan Ladjanszki 
+#+EMAIL: istvan.ladjanszki@gmail.com
+#+LANGUAGE: en
+#+OPTIONS:   author:t creator:t timestamp:t email:t
+#+DESCRIPTION: My Emacs config which I restarted after messing it up for years 
+
+* What is this?
+This is my personal Emacs configuraion file. The init.el can be extracted by invoking the command M-x org-babel-tangle. The org mode documentation for this can be found [[https://orgmode.org/manual/Extracting-source-code.html#Extracting-source-code][here]].
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+;; Istvan Ladjanszki 
+;; istvan.ladjanszki@gmail.com
+;; Under MIT Licence 2020 
+;;
+;; This init.el file was generated from and org file 
+;; DO NOT MODIFIY THIS GENERATED VERSION
+#+END_SRC
+
+* Package repositories
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(require 'package)
+
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+
+(package-initialize)
+;;(package-refresh-contents)
+
+#+END_SRC
+
+* Basics 
+** At startup  
+*** Inhibit splash screen
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq inhibit-splash-screen t)
+#+END_SRC
+
+*** Maximize Emacs
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+#+END_SRC
+** Appearence
+
+By default emacs has lots of useless UI elements, remove them to give more room for the actual edit buffers.
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(menu-bar-mode -1) 
+(tool-bar-mode -1)
+(toggle-scroll-bar -1)
+
+;; Visual appearence
+(menu-bar-mode -1)
+(toggle-scroll-bar -1)
+(tool-bar-mode -1)
+
+
+
+#+END_SRC
+
+
+** Cursor
+#+BEGIN_SRC emacs-lisp :tangle no
+(blink-cursor-mode -1)
+(set-cursor-color "#00ff00")
+#+END_SRC
+
+** Mode line
+Currently I do not use the modeline as much as I should
+
+*** Display the cursor position
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq line-number-mode t)
+(setq column-number-mode t)
+#+END_SRC
+** Paste from system clipboard
+*** middle button selection
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq x-select-enable-primary t)
+#+END_SRC
+** Stop making backup files
+Normally Emacs makes files with ending extended with a tilde ~
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq make-backup-files nil)
+#+END_SRC
+
+** Automatic line wrap
+- Lines out of the screen can not be used
+- This should be not used for source files only text
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(global-visual-line-mode t)
+#+END_SRC
+
+** Week starts on Monday
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq calendar-week-start-day 1)
+#+END_SRC
+
+** Smooth scrolling
+By default Emacs jups by half screen
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq scroll-step 1)
+#+END_SRC
+
+** Highlight parentheses
+I am not sure if the show-paren-delay does anything
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(show-paren-mode 1)
+(setq show-paren-delay 0)
+#+END_SRC
+
+** Splitting horizontally by default
+- By default Emacs splits vertically
+- This setup is eyecandy for me
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq split-width-threshold nil)
+#+END_SRC
+** Super key
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq w32-pass-lwindow-to-system nil)
+(setq w32-lwindow-modifier 'super) 
+(setq w32-pass-rwindow-to-system nil)
+(setq w32-rwindow-modifier 'super)
+#+END_SRC
+
+** Hyper key                                                                                                           :ARCHIVE:
+Due to a bug in Ubuntu this does not work
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq w32-pass-apps-to-system nil)
+(setq w32-apps-modifier 'hyper)
+
+(define-key key-translation-map (kbd "H-3") (kbd "•")) ; bullet
+(define-key key-translation-map (kbd "H-4") (kbd "◇")) ; white diamond
+(define-key key-translation-map (kbd "H-5") (kbd "†")) ; dagger
+#+END_SRC
+
+** Switching buffers
+Fast way to switch between buffers and get the buffer menu
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(global-set-key (kbd "<s-right>") 'next-buffer)
+(global-set-key (kbd "<s-left>") 'previous-buffer)
+(global-set-key (kbd "<s-down>") 'buffer-menu)
+#+END_SRC
+
+** Resize windows
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(global-set-key (kbd "M-<down>") 'enlarge-window)
+(global-set-key (kbd "M-<up>") 'shrink-window)
+(global-set-key (kbd "M-<left>") 'enlarge-window-horizontally)
+(global-set-key (kbd "M-<right>") 'shrink-window-horizontally)
+#+END_SRC
+
+
+;; Download Evil
+(unless (package-installed-p 'evil)
+  (package-install 'evil))
+
+;; Enable Evil
+(require 'evil)
+(evil-mode 1)
+
+;; Inhibit splash screen
+(setq inhibit-splash-screen t)
+
+;; Start in fullscreen
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+;; Line wrap
+(global-visual-line-mode t)
+
+;; HIglight current line
+(global-hl-line-mode +1)
+
+;; statusbar info
+(column-number-mode t)
+(size-indication-mode t)
+
+;; Autogenerated custom variables and faces to a separate file
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
+
+
+
+
+* Evil
+Evil is a vim emulator for Emacs.
+** Loading Evil
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(require 'evil)
+(evil-mode 1)
+#+END_SRC
+
+** Custom ex commands
+*** Kill current buffer (q)
+By default the ex command q quits emacs 
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(evil-ex-define-cmd "q" 'kill-this-buffer)
+#+END_SRC
+
+*** Quit Emacs (quit)
+You have to type the full thing to make it sure
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(evil-ex-define-cmd "quit" 'evil-quit)
+#+END_SRC
+
+*** Write and kill buffer (wq)
+To emulate the save and close function of wq 
+Vim can be used like this when files are opened in tabs
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(defun borneo/save-and-kill-buffer (arg)
+  (interactive "p")
+  (save-buffer)
+  (kill-this-buffer))
+
+(evil-ex-define-cmd "wq" 'borneo/save-and-kill-buffer)
+#+END_SRC
+
+* Org mode 
+Org mode is an organizer tool originally built on layout mode.
+
+** Loading Org mode
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(require 'org)
+#+END_SRC
+
+** Start logging
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-log-done t)
+#+END_SRC
+
+** Exporting
+Adding archived subtrees to exports. This is useful because I store DONE and CANCELLED tasks in an internal archive.
+Having this internal archive in the export is useful to know what is DONE and is not.
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-export-with-archived-trees t) 
+#+END_SRC
+** Agenda 
+*** Shortcut for the org agenda dispatcher
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(global-set-key "\C-ca" 'org-agenda)
+#+END_SRC
+*** Agendas into full frame 
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-agenda-window-setup 'only-window)
+#+END_SRC
+
+*** Org mode agenda files
+I use for agenda files all files in the org root directory. The files in the directory org/reference are not in this on purpose.
+**** All files from the directory
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-agenda-files (list "~/PROJECTS/org/"))
+#+END_SRC
+
+**** Files in a list one by one                                                                                      :ARCHIVE:
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq org-agenda-files
+  '("~/PROJECTS/org/naplo.org.gpg" 
+    "/home/borneo/PROJECTS/org/bookmarks.org" 
+    "/home/borneo/PROJECTS/org/inbox.org" 
+    "/home/borneo/PROJECTS/org/projects.org" 
+    "/home/borneo/PROJECTS/org/reference.org"  
+    "/home/borneo/PROJECTS/org/someday.org"))
+#+END_SRC
+*** Custom agenda views
+For writing custom agenda commands the help page of org-agenda-skip-if funciton is very helpful.
+In Emacs M-x describe-function RET org-agenda-skip-if should be invoked
+**** Custom agenda commands                                                                                          :ARCHIVE:
+There are currently three custom agenda commands I use
+- All "NEXT" tasks
+- All "WAITING" tasks
+- Full daily agenda (under construction)
+  The code for the full daily agenda comes from [[https://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html][this]] tutorial which is an exceptional information source on org-mode and Emacs.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq org-agenda-custom-commands '(
+  ("n" "In NEXT State" todo "NEXT" ((org-agenda-overriding-header "Next steps")))
+  ("w" "In WAITING State" todo "WAITING" ((org-agenda-overriding-header "Delegated and/or Waiting")))
+
+  ("F" "My daily block agenda" (
+    (agenda "" (
+      (org-agenda-span 1)
+      ;;(org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo '("SCHEDULED" "RECURRING")))
+      (org-agenda-overriding-header "Daily Tasks")
+    )) 
+    (todo "NEXT" ((org-agenda-overriding-header "Next steps")))
+    (todo "WAITING" ((org-agenda-overriding-header "Delegated and/or Waiting"))))
+    ((org-agenda-compact-blocks t)))
+
+  ("hd" "Daily tasks     " (
+    (agenda "" (
+      (org-agenda-span 1)
+      ;;(org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo '("SCHEDULED" "RECURRING")))
+      (org-agenda-overriding-header "Daily Tasks")
+    ))
+  ))
+
+  ("ho" "Home and Family " tags-todo "@otthon|#Berni" ((org-agenda-overriding-header "Home and Family")))
+  ;;("hh" "Másnapig        " tags-todo "Overnight" ((org-agenda-overriding-header "Taszkok holnap munkakezdésig")))
+  ("hc" "Corvinus        " tags-todo "@corvinus" ((org-agenda-overriding-header "Corvinus")))
+  ("hn" "Overnight       " tags-todo "Overnight" ((org-agenda-overriding-header "Overnight tasks")))
+  ("hf" "Finished        " todo "DONE|CANCELLED" ((org-agenda-overriding-header "Finished")))
+))
+#+END_SRC
+
+**** Weekly agenda in full frame                                                                                     :ARCHIVE:
+#+BEGIN_SRC emacs-lisp :tangle no
+;; Open agenda wiev and close all other windows (after org is fully configured) 
+(defun borneo/daily-agenda-in-full-frame (arg)
+  (interactive "p")
+  ;;(org-agenda-list)
+  (org-agenda arg "F")
+  (delete-other-windows))
+
+(global-set-key (kbd "<f1>") 'borneo/daily-agenda-in-full-frame)
+#+END_SRC
+
+**** "NEXT" tasks in full frame                                                                                      :ARCHIVE:
+#+BEGIN_SRC emacs-lisp :tangle no
+(defun borneo/next-in-full-frame (arg)
+  (interactive "p")
+  (org-agenda arg "n")
+  (delete-other-windows))
+
+(global-set-key (kbd "<f2>") 'borneo/next-in-full-frame)
+#+END_SRC
+
+**** "WAITING" tasks in full frame                                                                                   :ARCHIVE:
+#+BEGIN_SRC emacs-lisp :tangle no
+;; Open all WAITING tasks
+(defun borneo/waiting-in-full-frame (arg)
+  (interactive "p")
+  (org-agenda arg "w")
+  (delete-other-windows))
+
+;; Define a global key to invoke 
+(global-set-key (kbd "<f3>") 'borneo/waiting-in-full-frame)
+#+END_SRC
+
+**** Cusom agenda commands
+In the previous version the list containig the org agenda commands were so long that I had to find another way.
+First I assign an empty list then append the commands one-by-one
+
+Assign empty list to org-agenda-custom-commands
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-agenda-custom-commands nil)
+#+END_SRC
+
+***** All tasks in the state "NEXT"
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(add-to-list 'org-agenda-custom-commands
+	     '("n" "In NEXT State" todo "NEXT" ((org-agenda-overriding-header "Next steps")))
+	     t) 
+#+END_SRC
+
+***** All tasks in the state "WAITING"
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(add-to-list 'org-agenda-custom-commands
+	     '("w" "In WAITING State" todo "WAITING" ((org-agenda-overriding-header "Delegated and/or Waiting")))
+	     t)
+#+END_SRC
+
+***** Tag searches 
+****** All tasks related to home and my wife :)
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(add-to-list 'org-agenda-custom-commands
+	     '("ho" "Home and Family " tags-todo "@otthon|#Berni" ((org-agenda-overriding-header "Home and Family")))
+	     t)
+#+END_SRC
+
+****** Context agenda for university
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(add-to-list 'org-agenda-custom-commands
+	     '("hc" "Corvinus        " tags-todo "@corvinus" ((org-agenda-overriding-header "Corvinus")))
+	     t)
+#+END_SRC
+
+****** AFK Agenda 1 (one of them should be eliminated)
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(add-to-list 'org-agenda-custom-commands
+	     '("hn" "Overnight       " tags-todo "Overnight" ((org-agenda-overriding-header "Overnight tasks")))
+	     t)
+#+END_SRC
+
+****** AFK Agenda 2 
+I usually email this to myself the last thing in the evening
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(add-to-list 'org-agenda-custom-commands
+	     '("hh" "Másnapig        " tags-todo "Overnight" ((org-agenda-overriding-header "Taszkok holnap munkakezdésig")))
+	     t)
+#+END_SRC
+
+***** "TODO" State searches
+***** Finished tasks
+#+BEGIN_SRC emacs-lisp :tangle init.el
+  (add-to-list 'org-agenda-custom-commands
+               '("hf" "Finished        " ((todo "DONE" ((org-agenda-overriding-header "DONE")))
+                                          (todo "CANCELLED" ((org-agenda-overriding-header "CANCELLED"))))
+                 ((org-agenda-compact-blocks t)))
+                 t)
+#+END_SRC
+
+***** Block agenda to work from
+#+BEGIN_SRC emacs-lisp :tangle init.el
+  (add-to-list 'org-agenda-custom-commands
+               '("F" "My daily block agenda" ((agenda "" ((org-agenda-span 1)
+                                                          (org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo '("SCHEDULED" "RECURRING")))
+                                                          (org-agenda-overriding-header "Daily Tasks")))
+                                              (todo "NEXT" ((org-agenda-overriding-header "Next steps")))
+                                              (todo "WAITING" ((org-agenda-overriding-header "Delegated and/or Waiting"))))
+                 ((org-agenda-compact-blocks t)))
+               t)
+#+END_SRC
+
+***** Testing
+****** All tasks that has timestamp but not recurring nor scheduled
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(add-to-list 'org-agenda-custom-commands
+	     '("Xa" "TESTING" alltodo "" ((org-agenda-overriding-header "Testing2")
+					 (org-agenda-entry-types '(:timestamp))
+					 (org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo
+											      '("SCHEDULED" "RECURRING")))))
+	     t)
+#+END_SRC
+
+****** Overdue tasks
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(add-to-list 'org-agenda-custom-commands
+	     '("Xb" "TESTING" tags-todo "+TIMESTAMP<\"<now>\"" ((org-agenda-overriding-header "Overdue")))
+	     t)
+#+END_SRC
+
+****** All tasks with timestamps
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(add-to-list 'org-agenda-custom-commands
+	     '("Xc" "TESTING" alltodo "" ((org-agenda-skip-function '(org-agenda-skip-entry-if 'nottimestamp))
+					 (org-agenda-overriding-header "All timestamps")))
+	     t)
+#+END_SRC
+
+****** Example org-super-agenda
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(add-to-list 'org-agenda-custom-commands
+             '("Xd" "TESTING"
+               ((agenda "" ((org-agenda-span 'day)
+			    (org-super-agenda-groups '(
+						       (:name "Recurring" :todo "RECURRING")
+						       ))
+			    )))))
+#+END_SRC
+
+**** Testing the org-agenda-skip-function                                                                            :ARCHIVE:
+#+BEGIN_SRC emacs-lisp :tangle no
+ (defun my-skip-unless-waiting ()
+   "Skip trees that are not waiting"
+   (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+     (if (re-search-forward ":waiting:" subtree-end t)
+ 	nil          ; tag found, do not skip
+       subtree-end))) ; tag not found, continue after end of subtree
+ (add-to-list 'org-add-agenda-custom-command
+ 	     '("b" todo "PROJECT"
+ 	       ((org-agenda-skip-function 'my-skip-unless-waiting)
+ 		(org-agenda-overriding-header "Projects waiting for something: "))))
+
+#+END_SRC
+
+**** Keystrokes for the common agenda commands
+Sometimes it is easier to have a one button keystroke for agendas than go through the agenda dispatcher
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(global-set-key (kbd "<f1>") (kbd "C-c a F"))
+(global-set-key (kbd "<f2>") (kbd "C-c a n"))
+(global-set-key (kbd "<f3>") (kbd "C-c a w"))
+;;(global-set-key (kbd "<f12>") (kbd "C-c a X"))
+#+END_SRC
+
+** Tags
+*** Align tags (flusleft)
+Aligning the tasks both in the tree and agenda view 
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-agenda-tags-column 120)
+(setq org-tags-column 120)
+#+END_SRC
+
+*** Align tags (flushright)                                                                                           :ARCHIVE:
+Aligning the tasks both in the tree and agenda view 
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq org-agenda-tags-column -120)
+(setq org-tags-column -120)
+#+END_SRC
+
+*** List of the tags I use                                                                                            :ARCHIVE:
+Currently I use the tags from the files since it is more easily configurable and in the org files the way tags can be set up is 
+much more conventient.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+;; Org tags list
+(setq org-tag-alist '(("@otthon") ("@iroda") ("@corvinus") ("@elte") ("@gyuli") ("@kecskemet") ("@vachartyan") ("@QChem")
+		     ("#CzetenyiBeni") ("#TornaiGabor") ("#Dzsi") ("#RakAdam") ("#IllesJozsi") ("#CsereyGyuri")
+		     ("#Berni")
+		     ("Gmail")
+		     ("NVIDIA")
+		     ))
+#+END_SRC
+
+*** Aligning tags                                                                                                     :ARCHIVE:
+This is not used currently
+
+#+BEGIN_SRC emacs-lisp :tangle no
+;; Flush org tags to the right using the window width
+;;(add-hook 'focus-in-hook 
+;;  (lambda () (progn 
+;;    (setq org-tags-column (- 5 (window-body-width)))) (org-align-all-tags)))
+;;
+;;(add-hook 'focus-out-hook 
+;;  (lambda () (progn 
+;;    (setq org-tags-column (- 5 (window-body-width)))) (org-align-all-tags)))
+#+END_SRC
+
+*** Align tags in a different way                                                                                     :ARCHIVE:
+This is un-tested should not be used
+
+#+BEGIN_SRC emacs-lisp :tangle no
+TODO Proper way to position tags
+Place tags close to the right-hand side of the window
+(add-hook 'org-finalize-agenda-hook 'place-agenda-tags)
+(defun place-agenda-tags ()
+  "Put the agenda tags by the right border of the agenda window."
+  (setq org-agenda-tags-column (- 4 (window-width)))
+  (org-agenda-align-tags))
+#+END_SRC
+** Capture 
+*** Capture file
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-default-notes-file "~/PROJECTS/org/inbox.org")
+#+END_SRC
+
+*** Capture shortcut
+This should be changed to somthing shorter
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(define-key global-map "\C-cc" 'org-capture)
+#+END_SRC
+
+*** Capture template definitions
+Since I have a lot of templates I do the same trick as I do when adding the agenda commands.
+To the capture templates variable I assign an empty list then append the capture templates one by one.
+**** Setup empty list
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-capture-templates nil)
+#+END_SRC
+
+**** Template for TODO
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(add-to-list 'org-capture-templates '("t" 
+                                      "Todo" 
+                                      entry (file org-default-notes-file) "* TODO %i%?"))
+#+END_SRC
+
+**** Template for NOTE
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(add-to-list 'org-capture-templates '("n" 
+                                      "Note" 
+                                       entry (file org-default-notes-file) "* %i%?"))
+#+END_SRC
+
+**** Tickler                                                                                                         :ARCHIVE:
+#+BEGIN_SRC emacs-lisp :tangle no
+(add-to-list 'org-capture-templates '("T" "Tickler" entry (file+headline "~/gtd/tickler.org" "Tickler") "* %i%? \n %U")
+#+END_SRC
+
+**** Todo                                                                                                            :ARCHIVE:
+#+BEGIN_SRC emacs-lisp :tangle no
+(add-to-list 'org-capture-templates '("t" "Todo" entry (file "~/Work/Org/Refile.org") "* TODO %?\n%U" :empty-lines 1)
+#+END_SRC
+
+**** Todo with clipboard                                                                                             :ARCHIVE:
+#+BEGIN_SRC emacs-lisp :tangle no
+(add-to-list 'org-capture-templates '("T" "Todo with Clipboard" entry (file "~/Work/Org/Refile.org") "* TODO %?\n%U\n   %c" :empty-lines 1)
+#+END_SRC
+
+**** Note with clipboard                                                                                             :ARCHIVE:
+#+BEGIN_SRC emacs-lisp :tangle no
+(add-to-list 'org-capture-templates '("N" "Note with Clipboard" entry (file "~/Work/Org/Refile.org") "* NOTE %?\n%U\n   %c" :empty-lines 1)
+#+END_SRC
+
+**** Event                                                                                                           :ARCHIVE:
+#+BEGIN_SRC emacs-lisp :tangle no
+(add-to-list 'org-capture-templates '("e" "Event" entry (file+headline "~/Work/Org/Events.org" "Transient") "* EVENT %?\n%U" :empty-lines 1)
+#+END_SRC
+
+**** Event with clipboard                                                                                            :ARCHIVE:
+#+BEGIN_SRC emacs-lisp :tangle no
+(add-to-list 'org-capture-templates '("E" "Event With Clipboard" entry (file+headline "~/Work/Org/Events.org" "Transient") "* EVENT %?\n%U\n   %c" :empty-lines 1))
+#+END_SRC
+ 
+** Refile
+*** Target files
++ [2018-11-18] I use at most two levels of categorization for my projects. Overstructuring my notes seems now not to lead to a good GTD worlflow.
+Using only two levels also helps to avoid the clutter in the refile list. 
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-refile-targets '((org-agenda-files :maxlevel . 2)))
+#+END_SRC
+
+*** How to set the refile target 
+nil value means complete the target in one step
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-outline-path-complete-in-steps nil)
+#+END_SRC
+
+*** What to use in refile target
+- 'file means the refile target should contain the file name as well
+- It can be choosen to have the full path as well 
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-refile-use-outline-path 'file)
+#+END_SRC
+
+*** Allowing to refile as main headline
+In this way the refiled headline can be first header in the target file
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+#+END_SRC
+** Structure editing
+*** Do not split the headline before inserting headline
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-M-RET-may-split-line nil)
+#+END_SRC
+** "TODO" labels
+*** Keywords
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-todo-keywords '((sequence "NEW" "TODO" "NEXT" "SCHEDULED" "RECURRING" "WAITING" "NOTE" "|" "DONE" "CANCELLED")))
+#+END_SRC
+
+*** Faces
++ To set the faces the following keywords can be used in the list
+  - :foreground
+  - :background
+  - :weight
++ To list the colors Emacs can display invoke the 
+  - M-x list-colors-theme command
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-todo-keyword-faces '(
+    ("NEW" :foreground "light salmon" :weight bold)
+    ("TODO" :foreground "magenta3" :weight bold)
+	  ("NEXT" :foreground "yellow" :weight bold)
+	  ("SCHEDULED" :foreground "dodger blue" :weight bold)
+	  ("RECURRING" :foreground "deep pink" :weight bold)
+	  ("WAITING" :foreground "purple" :weight bold)
+	  ("NOTE" :foreground "firebrick" :weight bold)
+	  ("DONE" :foreground "green3" :weight bold)
+	  ("CANCELLED" :foreground "orange red" :weight bold)
+))
+#+END_SRC
+** Archive to sibling by one button
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-archive-sibling-heading "Finished")
+(global-set-key (kbd "<f8>") 'org-archive-to-archive-sibling)
+#+END_SRC
+
+** Look of the org file
+
+*** Headlines should be indented
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-startup-indented t)
+#+END_SRC
+
+*** Stars should be hided
+#+BEGIN_SRC emacs-lisp :tangle init.el
+;; Stars should be hided
+(setq org-hide-leading-stars t)
+#+END_SRC
+
+** Proiorities
+There are five priorites I currently use
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-highest-priority ?A)
+(setq org-lowest-priority ?E)
+(setq org-default-priority ?C)
+#+END_SRC
+
+** Syntax highlight in source code blocks 
+#+BEGIN_SRC emacs-lisp :tangle init.el
+(setq org-src-fontify-natively t)
+#+END_SRC
+
+
