@@ -1,13 +1,18 @@
 " Plugin handling
 call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'morhetz/gruvbox'
+    Plug 'dracula/vim',{'as':'dracula'}
+    Plug 'liuchengxu/space-vim-dark'
     Plug 'kassio/neoterm'
     Plug 'preservim/nerdtree'
     Plug 'junegunn/vader.vim' 
 call plug#end()
 
 " Setting the colorscheme
-colorscheme gruvbox
+"colorscheme gruvbox
+colorscheme dracula
+"colorscheme space-vim-dark
+
 
 " Basic settings
 set noswapfile 
@@ -43,13 +48,14 @@ noremap <leader>ev :edit $MYVIMRC <cr>
 noremap <leader>sv :source $MYVIMRC <cr>
 
 " Signature abbreviation
-iabbrev ssig --<CR>Istvan Ladjanszki<CR>istvan.ladjanszki@gmail.cov
+iabbrev ssig --<CR>Istvan Ladjanszki<CR>istvan.ladjanszki@gmail.com
 
 " Remap ESC
 " This can be useful since exiting to normal mode does not require to leave
 " the home row of the keyboard
 " The combination should be one that is not used frquently in insert mode
 "inoremap jk <esc>
+"inoremap kj <esc>
 "inoremap <esc> <nop>
 
 ""disable arrow keys
@@ -59,7 +65,13 @@ iabbrev ssig --<CR>Istvan Ladjanszki<CR>istvan.ladjanszki@gmail.cov
 "noremap <Right> <NOP>
 "noremap <BS> <NOP>
 "noremap <Del> <NOP>
-
+"
+"easier navigation in long lines
+"nnoremap <Up> gk      
+"nnoremap <Down> gjhh  
+"nnoremap k gk
+"nnoremap j gj
+ 
 
 " === PYTHON ===========================================================
 augroup pythonGroup
@@ -85,41 +97,21 @@ augroup vimlGroup
   autocmd FileType vim nnoremap <buffer> <localleader>q I" <esc>
 augroup END
 
-
- 
- 
-
-
-"easier navigation in long lines
-"nnoremap <Up> gk      
-"nnoremap <Down> gjhh  
-"nnoremap k gk
-"nnoremap j gj
-
-
-" My old comment formatting maps
-"map <F2> ddpk$J:s/C /!<CR>
-"fortran 77 style comments to !style comments
-
-"map <F3> 1\|/!<CR>d$72\|p
-"put in line comments to column 73
-
-"map <F4> 1\|/\/<CR>d$72\|p 
-"put in line comments to column 73
-
-"map <F5> 1\|/%<CR>d$72\|p
-"Latex comment to column 73
-
 " === NEOTERM ==========================================================
 " Exit terminal mode (to normal mode) with esc
 tnoremap <Esc> <C-\><C-n>
 
-" Start neoterm in insert mode
-let g:neoterm_autoinsert=1
+" Toggle terminal split in termal-, normal-, and insert mode
+"tnoremap <C-cr> :Ttoggle<cr>
+"nnoremap <C-cr> :Ttoggle<cr>
+"inoremap <C-cr> :Ttoggle<cr>
 
 " Toggle neoterm buffer at the bottom of the window
-"noremap <leader><cr> :bo Ttoggle<cr>
-noremap <leader><cr> :Ttoggle<cr>
+nnoremap <leader><cr> :Ttoggle<cr>
+tnoremap <leader><cr> :Ttoggle<cr>
+
+" Start neoterm in insert mode
+let g:neoterm_autoinsert=1
 
 " open terminal in bottom full width split
 " For more info see :help :botright or :help mods
@@ -134,12 +126,40 @@ let g:neoterm_autoscroll=1
 "let g:neoterm_direct_open_repl=1
 "let g:neoterm_repl_python='ipython'
 
-" send current line and move down
+" send current line to REPL and move down
 "nnoremap <c-cr> :TREPLSendLine<cr>j 
 
-" send current selection
+" send current selection to REPL
 "vnoremap <c-cr> :TREPLSendSelection<cr> 
  
-" === NERDTREE =========================================================
+" === SPLIT HANDLING ===================================================
+" Movel to split left
+nnoremap <leader>sh <c-w>h 
+
+" Move to split below
+nnoremap <leader>sj <c-w>j 
+
+" Move to split above
+nnoremap <leader>sk <c-w>k 
+
+" Move to split right
+nnoremap <leader>sl <c-w>l 
+
+" Other split commands to map to <leader>s
+""Max out the height of the current split
+"ctrl + w _
+"
+""Max out the width of the current split
+"ctrl + w |
+"
+""Normalize all split sizes, which is very handy when resizing terminal
+"ctrl + w =
+"
+""Break out current window into a new tabview
+"Ctrl+W T
+"
+""Close every window in the current tabview but the current one
+"Ctrl+W o"
+nnoremap <leader>so <c-w>o 
  
 
