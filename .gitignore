@@ -1,1 +1,12 @@
+# Neovim related ignores
 nvim/.config/nvim/autoload/plugged/*
+
+# Emacs related ignores
+emacs/.config/emacs/bookmarks
+emacs/.config/emacs/auto-save-list
+emacs/.config/emacs/ido.last
+emacs/.config/emacs/elpa/gnupg/*
+emacs/.config/emacs/elpa/archives/*
+emacs/.config/emacs/elpa/archives/*/*
+emacs/.config/emacs/elpa/archives/*/*/*
+emacs/.config/emacs/**/*.pyc
